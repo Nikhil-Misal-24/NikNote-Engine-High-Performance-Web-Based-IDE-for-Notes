@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NIK.workspace | Professional Suite</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;700&family=Syncopate:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00f2ff;
+            --secondary: #7000ff;
+            --bg: #020617;
+            --sidebar-bg: rgba(15, 23, 42, 0.9);
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.08);
+            --accent-green: #10b981;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Space Grotesk', sans-serif; }
+
+        body {
+            background-color: var(--bg);
+            background-image: radial-gradient(circle at 50% 50%, #1e1b4b 0%, #020617 100%);
+            color: #f1f5f9;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .app-container { display: flex; flex: 1; overflow: hidden; }
+
+        /* --- Sidebar --- */
+        aside {
+            width: 280px;
+            background: var(--sidebar-bg);
+            backdrop-filter: blur(25px);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem;
+            transition: 0.3s;
+            z-index: 100;
+        }
+
+        /* --- Animated Branding --- */
+        .brand {
+            font-family: 'Syncopate', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+            background: linear-gradient(270deg, var(--primary), var(--secondary), var(--primary));
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 3s linear infinite;
+            text-shadow: 0 0 10px rgba(0, 242, 255, 0.2);
+        }
+
+        @keyframes shine { to { background-position: 200% center; } }
+
+        .creator-tag {
+            font-size: 0.65rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 1.5rem;
+        }
+
+        .action-btns { display: flex; gap: 8px; margin-bottom: 1.5rem; }
+
+        .btn-main {
+            flex: 1;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            border: none; padding: 12px; border-radius: 10px;
+            color: white; font-weight: 700; cursor: pointer; font-size: 0.75rem;
+            transition: 0.3s;
+        }
+        .btn-main:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0, 242, 255, 0.2); }
+
+        #file-list { flex: 1; overflow-y: auto; }
+
+        .folder-label {
+            font-size: 0.7rem; color: var(--primary); font-weight: 700;
+            margin: 15px 0 8px 5px; text-transform: uppercase;
+        }
+
+        .file-item {
+            padding: 10px 14px; background: var(--glass); border: 1px solid var(--border);
+            border-radius: 10px; cursor: pointer; display: flex; justify-content: space-between;
+            align-items: center; margin-bottom: 6px; transition: 0.2s; font-size: 0.85rem;
+        }
+        .file-item:hover, .file-item.active { border-color: var(--primary); background: rgba(0, 242, 255, 0.05); }
+
+        .delete-btn { color: #ef4444; background: none; border: none; cursor: pointer; font-size: 1rem; opacity: 0.4; }
+        .file-item:hover .delete-btn { opacity: 1; }
+
+        /* --- Main Workspace --- */
+        main { flex: 1; padding: 2rem; display: flex; flex-direction: column; gap: 1.5rem; transition: 0.3s; }
+
+        .header-controls { display: flex; gap: 15px; align-items: center; flex-wrap: wrap; }
+
+        #file-title {
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+            padding: 12px 20px; border-radius: 12px; color: #fff; font-size: 1.1rem; flex: 1; outline: none;
+            min-width: 200px;
+        }
+
+        .save-btn {
+            background: var(--accent-green); border: none; padding: 12px 30px;
+            border-radius: 12px; color: white; font-weight: 700; cursor: pointer; transition: 0.3s;
+        }
+        .save-btn:hover { background: #059669; transform: scale(1.03); }
+
+        .editor-wrapper {
+            flex: 1; background: rgba(15, 23, 42, 0.5); border-radius: 24px;
+            border: 1px solid var(--border); padding: 1.5rem;
+        }
+
+        textarea {
+            width: 100%; height: 100%; background: transparent; border: none;
+            outline: none; color: #cbd5e1; font-size: 1.1rem; resize: none; line-height: 1.7;
+        }
+
+        /* --- Footer --- */
+        footer {
+            height: auto; min-height: 45px; background: rgba(15, 23, 42, 0.95); border-top: 1px solid var(--border);
+            display: flex; align-items: center; padding: 10px 2rem; justify-content: space-between;
+            font-size: 0.75rem; color: #94a3b8; flex-wrap: wrap; gap: 10px;
+        }
+        .nik-name { color: var(--primary); font-weight: 700; letter-spacing: 1px; }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            .app-container { flex-direction: column; }
+            aside { width: 100%; height: 200px; border-right: none; border-bottom: 1px solid var(--border); }
+            main { padding: 1rem; }
+            footer { justify-content: center; text-align: center; }
+        }
+
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <aside>
+            <div class="brand">NIK.workspace</div>
+            <div class="creator-tag">By Nikhil Misal</div>
+            <div class="action-btns">
+                <button class="btn-main" onclick="createNewFolder()">+ FOLDER</button>
+                <button class="btn-main" onclick="createNewFile()">+ FILE</button>
+            </div>
+            <div id="file-list"></div>
+        </aside>
+
+        <main>
+            <div class="header-controls">
+                <input type="text" id="file-title" placeholder="Document Name...">
+                <button class="save-btn" onclick="saveCurrentFile()">SAVE CHANGES</button>
+            </div>
+            <div class="editor-wrapper" id="ui-wrapper">
+                <textarea id="editor" spellcheck="true" placeholder="Start your next big project..."></textarea>
+            </div>
+        </main>
+    </div>
+
+    <footer>
+        <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+            <div><span style="color: var(--accent-green)">●</span> SYSTEM_READY</div>
+            <div id="stats" style="color: #fff; font-weight: 500; border-left: 1px solid var(--border); padding-left: 15px;">
+                CHARS: 0 | WORDS: 0 | ALPHABETS: 0
+            </div>
+        </div>
+        <div id="date-time-container" style="color: var(--primary); font-weight: 500;">
+            <span id="live-date" style="margin-right: 15px;"></span>
+            <span id="clock">00:00:00</span>
+        </div>
+        <div>DEVELOPED BY <span class="nik-name">NIKHIL MISAL</span></div>
+    </footer>
+
+    <script>
+        // --- DATA ENGINE ---
+        let workspace = JSON.parse(localStorage.getItem('nik_v_final_data')) || [
+            { id: 'f_default', title: 'Main Projects', files: [] }
+        ];
+        let currentFileId = null;
+        let currentFolderId = workspace[0].id;
+
+        const fileListContainer = document.getElementById('file-list');
+        const editor = document.getElementById('editor');
+        const fileTitleInput = document.getElementById('file-title');
+        const stats = document.getElementById('stats');
+
+        const dictionary = {
+            "teh": "the", "recieve": "receive", "mkae": "make", "nik": "Nikhil",
+            "enginner": "engineer", "js": "JavaScript", "iot": "IoT"
+        };
+
+        editor.addEventListener('keydown', (e) => {
+            if (e.keyCode === 32 || e.keyCode === 13) {
+                const pos = editor.selectionStart;
+                const text = editor.value.substring(0, pos);
+                const words = text.split(/\s+/);
+                const last = words[words.length - 1].toLowerCase();
+
+                if (dictionary[last]) {
+                    const corrected = dictionary[last];
+                    editor.value = text.substring(0, text.length - last.length) + corrected + editor.value.substring(pos);
+                    const newPos = pos - last.length + corrected.length;
+                    editor.setSelectionRange(newPos, newPos);
+                }
+            }
+        });
+
+        function renderUI() {
+            fileListContainer.innerHTML = '';
+            workspace.forEach(folder => {
+                const fLabel = document.createElement('div');
+                fLabel.className = 'folder-label';
+                fLabel.innerHTML = `📁 ${folder.title} <span style="float:right; cursor:pointer; color:#444" onclick="deleteFolder('${folder.id}')">×</span>`;
+                fileListContainer.appendChild(fLabel);
+
+                folder.files.forEach(file => {
+                    const fItem = document.createElement('div');
+                    fItem.className = `file-item ${file.id === currentFileId ? 'active' : ''}`;
+                    fItem.onclick = () => loadFile(folder.id, file.id);
+                    fItem.innerHTML = `<span>📄 ${file.title}</span><button class="delete-btn" onclick="event.stopPropagation(); deleteFile('${folder.id}','${file.id}')">×</button>`;
+                    fileListContainer.appendChild(fItem);
+                });
+            });
+        }
+
+        function createNewFolder() {
+            const name = prompt("Folder Name:");
+            if(name) {
+                workspace.push({ id: 'fold_'+Date.now(), title: name, files: [] });
+                sync(); renderUI();
+            }
+        }
+
+        function createNewFile() {
+            if (workspace.length === 0) return alert("Pehle folder banaiye!");
+            const folder = workspace[0];
+            const newFile = { id: 'file_'+Date.now(), title: 'Untitled Note', content: '' };
+            folder.files.unshift(newFile);
+            sync(); loadFile(folder.id, newFile.id);
+        }
+
+        function loadFile(fId, fileId) {
+            currentFileId = fileId;
+            currentFolderId = fId;
+            const folder = workspace.find(f => f.id === fId);
+            const file = folder.files.find(f => f.id === fileId);
+            fileTitleInput.value = file.title;
+            editor.value = file.content;
+            renderUI();
+            updateMeta();
+        }
+
+        function saveCurrentFile() {
+            if (!currentFileId) return;
+            const folder = workspace.find(f => f.id === currentFolderId);
+            const file = folder.files.find(f => f.id === currentFileId);
+            file.title = fileTitleInput.value || 'Untitled';
+            file.content = editor.value;
+            sync(); renderUI();
+            const wrapper = document.getElementById('ui-wrapper');
+            wrapper.style.borderColor = 'var(--primary)';
+            setTimeout(() => wrapper.style.borderColor = 'var(--border)', 600);
+        }
+
+        function deleteFile(fId, fileId) {
+            const folder = workspace.find(f => f.id === fId);
+            folder.files = folder.files.filter(f => f.id !== fileId);
+            if(currentFileId === fileId) { currentFileId = null; editor.value = ''; fileTitleInput.value = ''; updateMeta(); }
+            sync(); renderUI();
+        }
+
+        function deleteFolder(fId) {
+            if(confirm("Delete folder?")) {
+                workspace = workspace.filter(f => f.id !== fId);
+                sync(); renderUI();
+            }
+        }
+
+        function sync() { localStorage.setItem('nik_v_final_data', JSON.stringify(workspace)); }
+
+        function updateMeta() { 
+            const text = editor.value;
+            const charCount = text.length;
+            const wordCount = text.trim() === "" ? 0 : text.trim().split(/\s+/).length;
+            const alphabetCount = (text.match(/[a-zA-Z]/g) || []).length;
+            stats.innerText = `CHARS: ${charCount} | WORDS: ${wordCount} | ALPHABETS: ${alphabetCount}`; 
+        }
+
+        // --- CLOCK AND DATE SYSTEM ---
+        setInterval(() => { 
+            const now = new Date();
+            document.getElementById('clock').innerText = now.toLocaleTimeString();
+            document.getElementById('live-date').innerText = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+        }, 1000);
+
+        editor.addEventListener('input', updateMeta);
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') { e.preventDefault(); saveCurrentFile(); }
+        });
+
+        renderUI();
+    </script>
+</body>
+</html>
